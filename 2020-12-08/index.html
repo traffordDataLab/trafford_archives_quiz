@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Trafford Archives Quiz</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+	<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet">
+
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+
+		html,
+		body,
+		#map {
+			height: 100%;
+			width: 100vw;
+			font-family: 'Lato', serif;
+			font-size: 14px;
+		}
+
+		.title {
+			padding: 6px 8px;
+			font-size: 15px;
+			line-height: 19px;
+			font-weight: 600;
+			background: white;
+			background: rgba(255, 255, 255, 0.8);
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+			border-radius: 5px;
+		}
+
+		.leaflet-popup-content h1 {
+			padding: 0;
+			margin: 0;
+			font-size: 15px;
+			line-height: 19px;
+			font-weight: 600;
+		}
+
+		.leaflet-popup-content .locations {
+			margin-bottom: 5px;
+			color: #777;
+		}
+
+		.leaflet-popup-content p {
+			margin: 0;
+			padding: 0;
+		}
+
+		.popupImage {
+			display: block;
+			height: auto;
+			max-width: 100%;
+			width: 100%;
+		}
+
+	</style>
+
+</head>
+
+<body>
+
+
+	<div id="map"></div>
+
+	<script>
+		// initialize the map
+		var map = L.map('map').setView([53.421829, -2.330256], 12);
+
+		// add a fullscreen button
+		map.addControl(new L.Control.Fullscreen());
+
+		// load a tile layer
+		L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'})
+		.addTo(map);
+
+		// embed point data in GeoJSON format
+		var locations = {
+			"type": "FeatureCollection",
+			"name": "locations",
+			"crs": {
+				"type": "name",
+				"properties": {
+					"name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+				}
+			},
+			"features": [{
+					"type": "Feature",
+					"properties": {
+						"name": "The Green, Partington",
+						"image_url": "img/the_green_partington.jpg"
+					},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [-2.427945, 53.420168]
+					}
+				},
+				{
+					"type": "Feature",
+					"properties": {
+						"name": "Urmston Station",
+						"image_url": "img/urmston_station.jpg"
+					},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [-2.353974, 53.448365]
+					}
+				},
+				{
+					"type": "Feature",
+					"properties": {
+						"name": "Goose Green, Altrincham",
+						"image_url": "img/goose_green_altrincham.jpg"
+					},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [-2.350143, 53.385379]
+					}
+				},
+				{
+					"type": "Feature",
+					"properties": {
+						"name": "Stretford Library",
+						"image_url": "img/stretford_library.jpg"
+					},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [-2.31252, 53.44599]
+					}
+				}
+			]
+		}
+
+		// style circle markers
+		var geojsonMarkerOptions = {
+			radius: 8,
+			fillColor: "#007C9E",
+			color: "#FFFFFF",
+			weight: 1,
+			opacity: 1,
+			fillOpacity: 0.8
+		};
+
+		// apply styling and add popups
+		var layerGroup = L.geoJSON(locations, {
+			pointToLayer: function(feature, latlng) {
+				return L.circleMarker(latlng, geojsonMarkerOptions);
+			},
+			onEachFeature: function(feature, layer) {
+				layer.bindPopup('<img src="' + feature.properties.image_url + '"class="popupImage">' +
+				feature.properties.name + '</h1><p class="locations">');
+			}
+		}).addTo(map);
+
+		// add a title
+		var title = L.control({
+			position: "topright"
+		});
+		title.onAdd = function(map) {
+			this._div = L.DomUtil.create("div", "title");
+			this._div.innerHTML = "Trafford Archives Quiz: 8 December 2020";
+			return this._div;
+		};
+
+		title.addTo(map);
+
+	</script>
+</body>
+
+</html>
