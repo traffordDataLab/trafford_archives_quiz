@@ -1,2 +1,2 @@
-# trafford_archives_quiz
-Mapping answers to the Trafford Archives quiz
+# Trafford Archives Quiz
+Mapping answers to the [Trafford Archives](https://twitter.com/TraffordArchive) quiz
